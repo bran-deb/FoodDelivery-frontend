@@ -1,0 +1,49 @@
+body {
+  background-color: #eee;
+  display: flex;
+}
+
+body div {
+  flex-grow: 1;
+  background-color: #fff;
+  margin: 5px;
+  margin-top: 0px;
+}
+
+body div:first-child {
+  margin-left: 0;
+}
+#orders {
+  margin-right: 0;
+}
+
+ul {
+  list-style-type: none;
+}
+
+#submit {
+  background-color: #2a91bd;
+  color: #fff;
+  padding: 10px 15px;
+  border: solid 0px;
+  border-radius: 25px;
+  margin: 15px;
+  margin-left: 30px;
+}
+#submit:hover {
+  background-color: #074158;
+}
+#submit:disabled{
+  background-color: #92d7f5;
+}
+#meals-list li {
+  cursor: pointer;
+}
+
+.selected {
+  background-color: #eee;
+}
+/* "build": "rd /s public && mkdir public && echo 'Custom Build' > ./public/index.html" */
+/* coneccion al local host con vercel */
+/* "build": "rm -rf public && mkdir public && echo 'Custom Build' > ./public/index.html" */
+/* coneccion al host o dominio en vercel */

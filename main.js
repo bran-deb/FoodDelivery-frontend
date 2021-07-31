@@ -28,34 +28,12 @@ const renderOrder = (order, meals) => {
     return element
 }
 
-fetch('https://serverless-jairopadilla19.vercel.app/api/meals')
-
-    .then(response => response.json())
-    .then(data => {
-        mealsStare = data
-        const mealsList = document.getElementById('meals-list')
-        const submit = document.getElementById('submit')
-        const listItems = data.map(renderItem)
-        mealsList.removeChild(mealsList.firstElementChild)
-        listItems.forEach(element => {
-            mealsList.appendChild(element)
-        });
-        submit.removeAttribute('disabled')
-        fetch('https://serverless-jairopadilla19.vercel.app/api/orders')
-            .then(response => response.json())
-            .then(ordersData => {
-                const ordersList = document.getElementById('orders-list')
-                const listOrders = ordersData.map(orderData => renderOrder(orderData, data))
-                ordersList.removeChild(ordersList.firstElementChild)
-                listOrders.forEach(element => ordersList.appendChild(element))
-            })
-
-    })
-
 window.onload = () => {
     const orderForm = document.getElementById('order')
     orderForm.onsubmit = (e) => {
         e.preventDefault()
+        const submit = document.getElementById('submit')
+        submit.setAttribute('disabled', true)
         const mealId = document.getElementById('meals-id')
         const mealIdValue = mealId.value
         if (!mealIdValue) {
@@ -78,8 +56,31 @@ window.onload = () => {
                 const renderedOrder = renderOrder(respuesta, mealsState)
                 const ordersList = document.getElementById('orders-list')
                 ordersList.appendChild(renderedOrder)
+                submit.removeAttribute('disabled')
             })
     }
 
+    fetch('https://serverless-jairopadilla19.vercel.app/api/meals')
 
+        .then(response => response.json())
+        .then(data => {
+            mealsState = data
+            const mealsList = document.getElementById('meals-list')
+            const submit = document.getElementById('submit')
+            const listItems = data.map(renderItem)
+            mealsList.removeChild(mealsList.firstElementChild)
+            listItems.forEach(element => {
+                mealsList.appendChild(element)
+            });
+            submit.removeAttribute('disabled')
+            fetch('https://serverless-jairopadilla19.vercel.app/api/orders')
+                .then(response => response.json())
+                .then(ordersData => {
+                    const ordersList = document.getElementById('orders-list')
+                    const listOrders = ordersData.map(orderData => renderOrder(orderData, data))
+                    ordersList.removeChild(ordersList.firstElementChild)
+                    listOrders.forEach(element => ordersList.appendChild(element))
+                })
+
+        })
 }

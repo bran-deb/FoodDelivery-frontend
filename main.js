@@ -1,3 +1,5 @@
+let mealsState = []
+
 const stringToHTML = (s) => {
     const parser = new DOMParser()
     const doc = parser.parseFromString(s, 'text/html')
@@ -19,6 +21,37 @@ const renderItem = (item) => {
     return element
 }
 
+const renderOrder = (order, meals) => {
+    const meal = meals.find(meal => meal._id === order.meal_id)
+    const element = stringToHTML(`<li data-id= "${order._id}">${meal.name} - ${order.user_id}</li>`)
+
+    return element
+}
+
+fetch('https://serverless-jairopadilla19.vercel.app/api/meals')
+
+    .then(response => response.json())
+    .then(data => {
+        mealsStare = data
+        const mealsList = document.getElementById('meals-list')
+        const submit = document.getElementById('submit')
+        const listItems = data.map(renderItem)
+        mealsList.removeChild(mealsList.firstElementChild)
+        listItems.forEach(element => {
+            mealsList.appendChild(element)
+        });
+        submit.removeAttribute('disabled')
+        fetch('https://serverless-jairopadilla19.vercel.app/api/orders')
+            .then(response => response.json())
+            .then(ordersData => {
+                const ordersList = document.getElementById('orders-list')
+                const listOrders = ordersData.map(orderData => renderOrder(orderData, data))
+                ordersList.removeChild(ordersList.firstElementChild)
+                listOrders.forEach(element => ordersList.appendChild(element))
+            })
+
+    })
+
 window.onload = () => {
     const orderForm = document.getElementById('order')
     orderForm.onsubmit = (e) => {
@@ -32,21 +65,21 @@ window.onload = () => {
 
         const order = {
             meal_id: mealIdValue,
-            user_id: 'chanchito feliz'
+            user_id: 'chanchito triste'
         }
+        fetch('https://serverless-jairopadilla19.vercel.app/api/orders', {
+            method: 'POST',
+            headers: {
+                'content-Type': 'application/json',
+            },
+            body: JSON.stringify(order)
+        }).then(x => x.json())
+            .then(respuesta => {
+                const renderedOrder = renderOrder(respuesta, mealsState)
+                const ordersList = document.getElementById('orders-list')
+                ordersList.appendChild(renderedOrder)
+            })
     }
 
-    fetch('https://serverless-jairopadilla19.vercel.app/api/meals')
 
-        .then(response => response.json())
-        .then(data => {
-            const mealsList = document.getElementById('meals-list')
-            const submit = document.getElementById('submit')
-            const listItems = data.map(renderItem)
-            mealsList.removeChild(mealsList.firstElementChild)
-            listItems.forEach(element => {
-                mealsList.appendChild(element)
-            });
-            submit.removeAttribute('disabled')
-        })
 }
